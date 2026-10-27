@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixel Blade: LuckWarp | Daily Key</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body {
+      background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #09090b 80%);
+      color: #f4f4f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      background: rgba(24, 24, 27, 0.85);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      backdrop-filter: blur(16px);
+      border-radius: 18px;
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(99, 102, 241, 0.15);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .dot { width: 7px; height: 7px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 8px #4ade80; }
+    h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.5px; }
+    .subtitle { font-size: 13px; color: #a1a1aa; margin-bottom: 24px; }
+    .key-box {
+      background: #09090b;
+      border: 1px dashed rgba(99, 102, 241, 0.4);
+      border-radius: 12px;
+      padding: 16px 12px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .key-label { font-size: 11px; text-transform: uppercase; color: #818cf8; letter-spacing: 1px; margin-bottom: 6px; font-weight: 700; }
+    .key-value {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: #38bdf8;
+      letter-spacing: 2px;
+      word-break: break-all;
+    }
+    .btn-copy {
+      width: 100%;
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: #fff;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    }
+    .btn-copy:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6); }
+    .btn-copy:active { transform: translateY(1px); }
+    .countdown-box {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #71717a;
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 14px;
+    }
+    .instructions {
+      margin-top: 24px;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: #a1a1aa;
+      line-height: 1.6;
+    }
+    .instructions ol { margin-left: 18px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="badge"><div class="dot"></div> Verified & Active</div>
+    <h1>Pixel Blade: LuckWarp</h1>
+    <div class="subtitle">Daily Access Key (Expires every 24h at 00:00 UTC)</div>
+
+    <div class="key-box">
+      <div class="key-label">Your Daily Key</div>
+      <div class="key-value" id="keyValue">GENERATING...</div>
+    </div>
+
+    <button class="btn-copy" id="copyBtn" onclick="copyKey()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      Copy Key
+    </button>
+
+    <div class="instructions">
+      <strong>How to activate:</strong>
+      <ol>
+        <li>Click <strong>Copy Key</strong> above.</li>
+        <li>Open Roblox &amp; run the LuckWarp script.</li>
+        <li>Paste the key into the Key Gate window and press <strong>Submit</strong>.</li>
+      </ol>
+    </div>
+
+    <div class="countdown-box">
+      <span>Expires in: <strong id="timer">--h --m --s</strong></span>
+      <span id="dateLabel">UTC Date: ----</span>
+    </div>
+  </div>
+
+  <script>
+    const SALT = "PB_LUCKWARP_2026";
+
+    function rotl(x, k) {
+      return (((x << k) | (x >>> (32 - k))) >>> 0);
+    }
+
+    function genDailyKey(dateStr) {
+      const str = dateStr + ":" + SALT;
+      let h1 = 0x811c9dc5 >>> 0;
+      let h2 = 0x9e3779b9 >>> 0;
+      for (let i = 0; i < str.length; i++) {
+        const ch = str.charCodeAt(i);
+        const x1 = rotl((h1 ^ ch) >>> 0, 7);
+        h1 = (x1 + 0x654321) % 4294967296;
+        const x2 = rotl((h2 ^ ch) >>> 0, 11);
+        h2 = (x2 + 0x987654) % 4294967296;
+      }
+      const hex1 = h1.toString(16).toUpperCase().padStart(8, "0");
+      const hex2 = h2.toString(16).toUpperCase().padStart(8, "0");
+      return "LW-" + hex1.slice(0, 4) + "-" + hex1.slice(4, 8) + "-" + hex2.slice(0, 4);
+    }
+
+    function update() {
+      const now = new Date();
+      const dateStr = now.toISOString().slice(0, 10);
+      document.getElementById("keyValue").innerText = genDailyKey(dateStr);
+      document.getElementById("dateLabel").innerText = "UTC: " + dateStr;
+
+      // Countdown to UTC midnight
+      const midnight = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0));
+      const diffSec = Math.max(0, Math.floor((midnight - now) / 1000));
+      const hours = Math.floor(diffSec / 3600);
+      const minutes = Math.floor((diffSec % 3600) / 60);
+      const seconds = diffSec % 60;
+      document.getElementById("timer").innerText = 
+        String(hours).padStart(2, "0") + "h " + 
+        String(minutes).padStart(2, "0") + "m " + 
+        String(seconds).padStart(2, "0") + "s";
+    }
+
+    function copyKey() {
+      const key = document.getElementById("keyValue").innerText;
+      navigator.clipboard.writeText(key).then(() => {
+        const btn = document.getElementById("copyBtn");
+        btn.innerHTML = "✓ Copied to Clipboard!";
+        btn.style.background = "#10b981";
+        setTimeout(() => {
+          btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copy Key';
+          btn.style.background = "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)";
+        }, 2000);
+      });
+    }
+
+    update();
+    setInterval(update, 1000);
+  </script>
+</body>
+</html>
